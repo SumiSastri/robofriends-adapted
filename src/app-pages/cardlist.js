@@ -2,6 +2,10 @@ import React from 'react';
 import Card from './card.js';
 
 const CardList = ({ robots }) => {
+	// if (true) {
+	// 	throw new Error('An Error Has Occured Check your Code!');
+	// }
+	// UNCOMMENT CODE FOR PRODUCTION
 	return (
 		<div>
 			{robots.map((user, i) => {

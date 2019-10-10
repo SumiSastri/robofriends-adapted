@@ -7,7 +7,8 @@ Robot Friends is a student project using 2 APIs [https://jsonplaceholder.typicod
 
 - Learning objectives
 - Project setup(scaffolding)
-
+- Tasks 1-6 cover in detail the tutorials in Section 19 upto video 206
+- Redux to be added later videos 206-218
 
 ### Learning objectives
 
@@ -49,7 +50,8 @@ Set up file structure with a front end source folder.
 
 - initial set up for destructuring
 
- ```const Card = ({ props }) => {
+```
+	const Card = ({ props }) => {
      const Card = ({ name, description, favefood, id })
 	return (<div></div>)}        
 ```
@@ -76,8 +78,8 @@ const Card = ({ name, description, favefood, id }) => {
 		</div>
 	);
 };
-
 export default Card;
+
 ```
 ### Task 2 (Video 198) Create parent of card component, map data into the child component using array methods
 
@@ -114,6 +116,7 @@ const CardList = ({ robots }) => {
 };
 
 export default CardList;
+
 ```
 This is how the app looks with the data hard-coded, each of the props has its own name, if you want get more data from the API call, the only property that matches the API is name - therefore the properties favefood, description will not render as they do not exist as props in the API. Change the props here if you want to render more data using the name-value pairs in the API.
 
@@ -174,6 +177,7 @@ By the end of the video the props of ```{searchfield}``` and ```{searchChange}``
 3. Creating the stateful parent App.js - classes and constructors were only added to JavaScript as it became a back-end language and is influenced by Java. A class is a type of object that with a constructor creates a blue-print that can be replicated.
 
 ```
+
 class App extends Component {
 	constructor() {
 		super();
@@ -182,7 +186,8 @@ class App extends Component {
 			searchfield: ''
 		};
 	}
-  ```  
+
+```  
 
 Stateful components use this method with the super method to render the jsx elements that need to be influenced by state. The jsx elements now need to use lexical ```this``` to render the jsx elements where ```this``` is the object that the SearchBox and CardList refer to which is state.
 
@@ -193,7 +198,6 @@ Stateful components use this method with the super method to render the jsx elem
 				<CardList robots={this.state.robots} />
 			</div>
 ```
-
 
 Once the blue print is created, the methods in state can be handed down to child components as props. The custom-function ```onSearchChange``` for example, will handle the change that the user inputs into the search bar. The event - updating the input field will have a value that changes. State which is immutable has to be changed and therefore the ```setState method``` is called, this updates the empty value of the input to the value that the user types in the search field. Searchfield's original state is empty - therefore that is what is represented by the constructor and robots (the data from the robots array) represents the imported robots object and the data in this object.
 
@@ -339,23 +343,22 @@ This can be refactored - the first part of this statement in JavaScript is false
 
 
 ```
-	return 
-	!this.state.robots.length? 
-				<div>
-					<h2>Please wait this page is still loading</h2>
-				</div>
-			:
-			(   <div className="tc bg dark-blue bg-light-red">
-					<h1>Robot Friends</h1>
-					<SearchBox searchChange={this.onSearchChange} />
-					<ScrollyBar>
-						<CardList robots={filteredRobots} />
-					</ScrollyBar>
-				</div> 
-				)}
+return !robots.length ? (
+			<div>
+				<h2>Please wait this page is still loading</h2>
+			</div>
+		) : (
+			<div className="tc bg dark-blue bg-light-red">
+				<h1>Robot Friends</h1>
+				<SearchBox searchChange={this.onSearchChange} />
+				<ScrollyBar>
+					<CardList robots={filteredRobots} />
+				</ScrollyBar>
+			</div>
+		);
+	}
+}
 ```
-
-
 ### Task 5 (Video 202) Create a Scrolly Bar
 
 1. Create another functional component and export it into App.js, When you console log props you will noe that props has children ```props.children``` 
@@ -369,7 +372,7 @@ const ScrollyBar = (props) =>{
 }
 
 ```
-Wrap the card component with the scrollybar component, import the component into App.js
+2. Wrap the card component with the scrollybar component, import the component into App.js
 
 ```
 			<ScrollyBar>
@@ -387,9 +390,11 @@ const ScrollyBar = (props) => {
 };
 
 export default ScrollyBar;
+
 ```
 
 by the end of this video the App.js file should look like this
+
 ```
 import React, { Component } from 'react';
 import CardList from './app-pages/cardlist';
@@ -443,7 +448,9 @@ class App extends Component {
 	}
 }
 export default App;
+
 ```
+
 The scrollybar component should look like this
 
 ```
@@ -454,4 +461,121 @@ const ScrollyBar = (props) => {
 };
 
 export default ScrollyBar;
-````
+```
+
+### Task 6 (Video 206) Use the Error Boundary Component for development
+
+To help you in the development process use the Error Boundary component to catch errors in the console. Create a stateful component that has a new lifecycle method ```componentDidCatch()```
+
+```
+import React, { Component } from 'react';
+
+class ErrorBoundary extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			hasError: false
+		};
+	}
+
+	componentDidCatch(error, info) {
+		this.setState({ hasError: true });
+	}
+	render() {
+		if (this.state.hasError) {
+			return <h3>Please check you have an error!</h3>;
+		}
+		return this.props.children;
+	}
+}
+export default ErrorBoundary;
+```
+
+import it into App.js/ In the cardList component check that it works.
+
+```
+import React, { Component } from 'react';
+import CardList from './app-pages/cardlist';
+import SearchBox from './common/searchbox';
+import ScrollyBar from './common/scroll';
+import ErrorBoundary from './errorboundary';
+import './index.css';
+
+class App extends Component {
+	constructor() {
+		super();
+		this.state = {
+			robots: [],
+			searchfield: ''
+		};
+	}
+
+	componentDidMount() {
+		fetch('https://jsonplaceholder.typicode.com/users')
+			.then((response) => response.json())
+			.then((users) => this.setState({ robots: users }));
+		// .then((users) => this.setState({}));
+		// do not remove checks the loading message works
+	}
+
+	onSearchChange = (event) => {
+		this.setState({ searchfield: event.target.value });
+	};
+
+	render() {
+		const { robots, searchfield } = this.state;
+		const filteredRobots = robots.filter((robots) => {
+			return robots.name.toLowerCase().includes(searchfield.toLowerCase());
+		});
+
+		return !robots.length ? (
+			<div>
+				<h2>Please wait this page is still loading</h2>
+			</div>
+		) : (
+			<div className="tc bg dark-blue bg-light-red">
+				<h1>Robot Friends</h1>
+				<SearchBox searchChange={this.onSearchChange} />
+				<ScrollyBar>
+					<ErrorBoundary>
+						<CardList robots={filteredRobots} />
+					</ErrorBoundary>
+				</ScrollyBar>
+			</div>
+		);
+	}
+}
+export default App;
+```
+
+Import it into the component that you want to catch the error - the code has been commented out as this works only when the app is in production. 
+
+```
+import React from 'react';
+import Card from './card.js';
+
+const CardList = ({ robots }) => {
+	// if (true) {
+	// 	throw new Error('An Error Has Occured Check your Code!');
+	// }
+	// UNCOMMENT CODE FOR PRODUCTION
+	return (
+		<div>
+			{robots.map((user, i) => {
+				return (
+					<Card
+						key={i}
+						id={robots[i].id}
+						name={robots[i].name}
+						favefood={robots[i].favefood}
+						description={robots[i].description}
+					/>
+				);
+			})}
+		</div>
+	);
+};
+
+export default CardList;
+
+```

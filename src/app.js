@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CardList from './app-pages/cardlist';
 import SearchBox from './common/searchbox';
 import ScrollyBar from './common/scroll';
+import ErrorBoundary from './errorboundary';
 import './index.css';
 
 class App extends Component {
@@ -14,11 +15,11 @@ class App extends Component {
 	}
 
 	componentDidMount() {
-		console.log('componentDidMount-2');
 		fetch('https://jsonplaceholder.typicode.com/users')
 			.then((response) => response.json())
 			.then((users) => this.setState({ robots: users }));
 		// .then((users) => this.setState({}));
+		// do not remove checks the loading message works
 	}
 
 	onSearchChange = (event) => {
@@ -30,7 +31,6 @@ class App extends Component {
 		const filteredRobots = robots.filter((robots) => {
 			return robots.name.toLowerCase().includes(searchfield.toLowerCase());
 		});
-		// console.log('render-3');
 
 		return !robots.length ? (
 			<div>
@@ -41,7 +41,9 @@ class App extends Component {
 				<h1>Robot Friends</h1>
 				<SearchBox searchChange={this.onSearchChange} />
 				<ScrollyBar>
-					<CardList robots={filteredRobots} />
+					<ErrorBoundary>
+						<CardList robots={filteredRobots} />
+					</ErrorBoundary>
 				</ScrollyBar>
 			</div>
 		);
