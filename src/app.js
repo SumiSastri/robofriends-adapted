@@ -3,13 +3,6 @@ import CardList from './cardlist';
 import SearchBox from './searchbox';
 import { robots } from './robots';
 
-// stateful component - properties come from state
-// state here is the robots and searchbox
-// these two properties - robots and search are passed to children
-// the props robots and search change when the parent changes state of the props
-// they can not change in the child components
-// therefore this app is the parent of all the key components
-
 class App extends Component {
 	constructor() {
 		super();

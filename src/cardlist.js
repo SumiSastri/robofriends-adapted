@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from './card.js';
-// stateless component
+
 const CardList = ({ robots }) => {
 	return (
 		<div>
