@@ -105,7 +105,7 @@ const CardList = ({ robots }) => {
 
 export default CardList;
 ```
-### Task 3 (Video 19)
+### Task 3 (Video 199)
 
 We now create the parent component - app.js where data trickles down to all the child components. As data flow is top to bottom, App.js is the component that holds state and all properties are passed from state to the child components. The robots array is therefore passed from App.js to all the other child components in the app as props ```{robots}``` as we have seen.
 
@@ -146,7 +146,7 @@ const SearchBox = ({ searchfield, searchChange }) => {
 				className="pa3  b--hot-pink bw2 br-pill bg-light-yellow"
 				type="search"
 				placeholder="search friends"
-				onChange={searchChange}
+				onChange={}
 			/>
 		</div>
 	);
@@ -170,7 +170,7 @@ class App extends Component {
 	}
   ```  
 
-Stateful components use this method with the super method to render the jsx elements that need to be influenced by state. The jsx elements now need to use lexical this to render the leemnts
+Stateful components use this method with the super method to render the jsx elements that need to be influenced by state. The jsx elements now need to use lexical ```this``` to render the jsx elements where ```this``` is the object that the SearchBox and CardList refer to which is state.
 
 ```
             <div className="tc bg dark-blue bg-light-red">
@@ -189,6 +189,7 @@ Once the blue print is created, the methods in state can be handed down to child
 		this.setState({ searchfield: event.target.value });
 	};
  ```
+ Check the function works with a console log and with react dev tools
 
 The filtering of the data of robots to match the user input requires it's own custom function. This is written inside the render method. This is because the data is taken from the input and the output - rendering of the component - is reliant on the render method of react.
 
@@ -199,3 +200,56 @@ The filtering of the data of robots to match the user input requires it's own cu
 		});
 		// console.log(filteredRobots);
   ```      
+ Check the function works with a console log and with react dev tools then you can pass the function to the jsx element as a prop. ```<CardList robots={filteredRobots.robots} />````
+
+ At the end of this task app.js should look like this
+
+ ```
+
+class App extends Component {
+	constructor() {
+		super();
+		this.state = {
+			robots: robots,
+			searchfield: ''
+		};
+	}
+
+	onSearchChange = (event) => {
+		this.setState({ searchfield: event.target.value });
+	};
+
+	render() {
+		const filteredRobots = this.state.robots.filter((robots) => {
+			return robots.name.toLowerCase().includes(this.state.searchfield.toLowerCase());
+		});
+		return (
+			<div className="tc bg dark-blue bg-light-red">
+				<h1>Robot Friends</h1>
+				<SearchBox searchChange={this.onSearchChange} />
+				<CardList robots={filteredRobots} />
+			</div>
+		);
+	}
+}
+export default App;
+
+```
+The search component does not change as much as it only receives the props passed down from app.js
+
+```import React from 'react';
+
+const SearchBox = ({ searchfield, searchChange }) => {
+	return (
+		<div className="pa2">
+			<input
+				className="pa3  b--hot-pink bw2 br-pill bg-light-yellow"
+				type="search"
+				placeholder="search friends"
+				onChange={searchChange}
+			/>
+		</div>
+	);
+};
+export default SearchBox;
+```
