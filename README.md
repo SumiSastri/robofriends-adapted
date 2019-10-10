@@ -1,26 +1,36 @@
-## Robot Friends
-Andrei Neagoie's The complete Web Developer 2019: Zero to Mastery [Udemy.com]
-Section 19 - React & Redux
+# Robot Friends
+Robot Friends is a student project using 2 APIs [https://jsonplaceholder.typicode.com/users] and [https://robohash.org] and React.js, it is adapted from Andrei Neagoie's The complete Web Developer 2019: Zero to Mastery [Udemy.com]
 
-### Progression from jQuery to React.js
+![react-challenges](src/screenshots-for-readme/FE-with-API.png)
 
+## Table of Contents
+
+- Learning objectives
+- Project setup(scaffolding)
+
+
+### Learning objectives
+
+Robot Friends is a project that I was worked on just after graduating from GA and just before I got my internship at goodlord. I wanted to build an app purely on the front end to revise basic concepts of react and build the project assisted by the video-tutorials. It records each task in this read-me to embed knowledge and improve skills. This read-me therefore is weighted towards task-based descriptions.
+
+### Project set up and scaffolding Section 19
+
+- Notes from Videos 191-194
 React is a library that enables a quick rendering of front-end components and DOM manipulation. It is good for VR, Desktop and Mobile apps as it is follows the MVC (model view control) principle. The concept of small, reusable modules makes it easy to configure SPAs (Single Page Applications) and scale them.
 
 Data flow in  React is downstream. This results in a more efficient and more bug-free front-end. React also makes DOM manipulation easy as it creates a copy of the DOM, the virtual DOM which renders the app. Once again, this results in a more efficient app as frequent DOM interaction (as with jQuery, vanilla js) is labour intensive and more prone to code errors.
 
-### Project set up and scaffolding
-
+- Set up the project with npm
 [global install in terminal] npm - g install create-react-app
 create a react project folder [npm create-react-app <projectname>]
 React scripts packages all the webpack/ babel transpiling in the background - check package json for dependencies installed.
 Version of the package locked in to the package-lock json
 git-ignore - ignores the git and node files when pushed to project
-
 React src files - app.js and index.js helps create the single page app
 index.css - the main css
 index.html - the root file for the app to render
 
-### Task 1 (Video 191-196)
+### Task 1 (Video 191-196) Set up first component, front-end data, API for image source
 
 Set up file structure with a front end source folder. 
 
@@ -69,7 +79,7 @@ const Card = ({ name, description, favefood, id }) => {
 
 export default Card;
 ```
-### Task 2 (Video 198)
+### Task 2 (Video 198) Create parent of card component, map data into the child component using array methods
 
 1. Create a CardList component as a functional component.This component, imports the Card Component,  returns the index of the robots array that has been created in the robots.js file and saved in a constant and exported to this file as a deconstructed prop from the parent - app.js. 
 
@@ -105,7 +115,11 @@ const CardList = ({ robots }) => {
 
 export default CardList;
 ```
-### Task 3 (Video 199)
+This is how the app looks with the data hard-coded, each of the props has its own name, if you want get more data from the API call, the only property that matches the API is name - therefore the properties favefood, description will not render as they do not exist as props in the API. Change the props here if you want to render more data using the name-value pairs in the API.
+
+![react-challenges](src/screenshots-for-readme/FE-hardcoded.png)
+
+### Task 3 (Video 199) Set up App.js as stateful component, custom functions to pass as props to a search component
 
 We now create the parent component - app.js where data trickles down to all the child components. As data flow is top to bottom, App.js is the component that holds state and all properties are passed from state to the child components. The robots array is therefore passed from App.js to all the other child components in the app as props ```{robots}``` as we have seen.
 
@@ -253,3 +267,191 @@ const SearchBox = ({ searchfield, searchChange }) => {
 };
 export default SearchBox;
 ```
+### Task 4 (Video 201) Use Lifecycle Hooks, set state with an API for users, add loading div
+
+1. There are three life cycle hooks in React - Mounting, Updating and Unmounting
+- Mounting - when a component mounts, we are replacing the html root div with our index.js file.
+Mounting is the start of the lifecycle hook in React - the whole app renders. The methods in this stage are classes with the  ```constructor()``` method and super to call the ```render()``` method and then we check if the app rendered with the  ```componentDidMount()``` the method - this method runs after the render method. If we use a console.log(1,2,3) when we update we can see how the virtual DOM parsed and in what sequence. We will see the lifecycle methods in action this way.
+
+Note ```componentWillMount()``` has been deprecated as unsafe
+
+In the App.js file we add the ```componentDidMount``` method to set state to ```this.setState({robots:robots})``` if we were using the front end data and we would show robots in the constructor method as an empty array ```constructor(){super() this.state= {robots:[]}}``` the initial state would be no robots and the update of the initial state would be to call the robots from the array in the component robots.js
+
+```
+class App extends Component {
+	constructor() {
+		super();
+		this.state = {
+			robots: [],
+			searchfield: ''
+		};
+		// console.log('constructor-1');
+	}
+
+	componentDidMount() {
+		this.setState({ robots: robots });
+		// console.log('componentDidMount-2');
+	}
+```
+- Using an API in a lifecycle method [jsonplaceholder.typicode/users] and promise-based call-back functions with the global ```fetch()``` method, if you set state to an empty object you will see that the data is not fetched and set in state the page renders an empty div, we use this empty div later to add a loading message
+
+```
+	componentDidMount() {
+		// console.log('componentDidMount-2'); 
+		fetch('https://jsonplaceholder.typicode.com/users')
+			.then((response) => response.json())
+			.then((users) => this.setState({ robots: users }));
+		// .then((users) => this.setState({}));
+	}
+```	
+
+2. The loading bar is good ui-ux because promise-based calls and async JavaScript means images can take longer to load and while the user is waiting instead of seeing a blank screen sees the loading message or a loading css div with conditional rendering.
+
+```
+render() {
+		const filteredRobots = this.state.robots.filter((robots) => {
+			return robots.name.toLowerCase().includes(this.state.searchfield.toLowerCase());
+		});
+		// console.log('render-3');
+
+		if (this.state.robots.length === 0) {
+			return (
+				<div>
+					<h2>Please wait this page is still loading</h2>
+				</div>
+			);
+		} else
+			return (
+				<div className="tc bg dark-blue bg-light-red">
+					<h1>Robot Friends</h1>
+					<SearchBox searchChange={this.onSearchChange} />
+					<ScrollyBar>
+						<CardList robots={filteredRobots} />
+					</ScrollyBar>
+				</div>
+			);
+	}
+}
+export default App;
+```
+This can be refactored - the first part of this statement in JavaScript is false - becuase it is zero
+```	if (this.state.robots.length === 0)``` we can change this to not false and shorten the run time of this code ```(!this.state.robots.length)``` and the if else can be changed to a ternary operator
+
+
+```
+	return 
+	!this.state.robots.length? 
+				<div>
+					<h2>Please wait this page is still loading</h2>
+				</div>
+			:
+			(   <div className="tc bg dark-blue bg-light-red">
+					<h1>Robot Friends</h1>
+					<SearchBox searchChange={this.onSearchChange} />
+					<ScrollyBar>
+						<CardList robots={filteredRobots} />
+					</ScrollyBar>
+				</div> 
+				)}
+```
+
+
+### Task 5 (Video 202) Create a Scrolly Bar
+
+1. Create another functional component and export it into App.js, When you console log props you will noe that props has children ```props.children``` 
+
+```
+const ScrollyBar = (props) =>{
+	// console.log(props) 
+	return(
+		<div>{props.children}</div>
+	)
+}
+
+```
+Wrap the card component with the scrollybar component, import the component into App.js
+
+```
+			<ScrollyBar>
+					<CardList robots={filteredRobots} />
+				</ScrollyBar>
+```
+
+Use css in jsx to style the scrolly bar, rather than styling it in css files, by the end of the video the scrollybar component should look like  this
+
+```
+import React from 'react';
+
+const ScrollyBar = (props) => {
+	return <div style={{ overflowY: 'scroll', border: '1px solid red', height: '1000px' }}>{props.children}</div>;
+};
+
+export default ScrollyBar;
+```
+
+by the end of this video the App.js file should look like this
+```
+import React, { Component } from 'react';
+import CardList from './app-pages/cardlist';
+import SearchBox from './common/searchbox';
+import ScrollyBar from './common/scroll';
+import './index.css';
+
+class App extends Component {
+	constructor() {
+		super();
+		this.state = {
+			robots: [],
+			searchfield: ''
+		};
+	}
+
+	componentDidMount() {
+		console.log('componentDidMount-2');
+		fetch('https://jsonplaceholder.typicode.com/users')
+			.then((response) => response.json())
+			.then((users) => this.setState({ robots: users }));
+		// .then((users) => this.setState({}));
+	}
+
+	onSearchChange = (event) => {
+		this.setState({ searchfield: event.target.value });
+	};
+
+	render() {
+		const filteredRobots = this.state.robots.filter((robots) => {
+			return robots.name.toLowerCase().includes(this.state.searchfield.toLowerCase());
+		});
+		// console.log('render-3');
+
+		if (this.state.robots.length === 0) {
+			return (
+				<div>
+					<h2>Please wait this page is still loading</h2>
+				</div>
+			);
+		} else
+			return (
+				<div className="tc bg dark-blue bg-light-red">
+					<h1>Robot Friends</h1>
+					<SearchBox searchChange={this.onSearchChange} />
+					<ScrollyBar>
+						<CardList robots={filteredRobots} />
+					</ScrollyBar>
+				</div>
+			);
+	}
+}
+export default App;
+```
+The scrollybar component should look like this
+
+```
+import React from 'react';
+
+const ScrollyBar = (props) => {
+	return <div style={{ overflowY: 'scroll', border: '2px solid red', height: '800px' }}>{props.children}</div>;
+};
+
+export default ScrollyBar;
+````
