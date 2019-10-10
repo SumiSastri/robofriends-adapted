@@ -1,5 +1,5 @@
 # Robot Friends
-Robot Friends is a student project using 2 APIs [https://jsonplaceholder.typicode.com/users] and [https://robohash.org] and React.js, it is adapted from Andrei Neagoie's The complete Web Developer 2019: Zero to Mastery [Udemy.com]
+Robot Friends is a student project in React.js using 2 APIs [https://jsonplaceholder.typicode.com/users] and [https://robohash.org]. It is adapted from Andrei Neagoie's The complete Web Developer 2019: Zero to Mastery (Udemy Tutorial)
 
 ![react-challenges](src/screenshots-for-readme/FE-with-API.png)
 
@@ -12,7 +12,7 @@ Robot Friends is a student project using 2 APIs [https://jsonplaceholder.typicod
 
 ### Learning objectives
 
-Robot Friends is a project that I was worked on just after graduating from GA and just before I got my internship at goodlord. I wanted to build an app purely on the front end to revise basic concepts of react and build the project assisted by the video-tutorials. It records each task in this read-me to embed knowledge and improve skills. This read-me therefore is weighted towards task-based descriptions.
+Robot Friends is a project that I was worked on just after graduating from GA and just before I got my internship at goodlord. I wanted to build an app purely on the front end to revise basic concepts of React and build the project assisted by the video-tutorials. It records each task in this read-me to embed knowledge and improve skills. This read-me therefore is weighted towards task-based descriptions.
 
 ### Project set up and scaffolding Section 19
 
@@ -22,14 +22,14 @@ React is a library that enables a quick rendering of front-end components and DO
 Data flow in  React is downstream. This results in a more efficient and more bug-free front-end. React also makes DOM manipulation easy as it creates a copy of the DOM, the virtual DOM which renders the app. Once again, this results in a more efficient app as frequent DOM interaction (as with jQuery, vanilla js) is labour intensive and more prone to code errors.
 
 - Set up the project with npm
-[global install in terminal] npm - g install create-react-app
-create a react project folder [npm create-react-app <projectname>]
-React scripts packages all the webpack/ babel transpiling in the background - check package json for dependencies installed.
-Version of the package locked in to the package-lock json
-git-ignore - ignores the git and node files when pushed to project
-React src files - app.js and index.js helps create the single page app
-index.css - the main css
-index.html - the root file for the app to render
+- global install in terminal] [npm - g install create-react-app]
+- create a react project folder [npm create-react-app <projectname>]
+- React scripts packages all the webpack/ babel transpiling in the background - check package json for dependencies installed.
+- Version of the package is locked in to the package-lock json
+- git-ignore - ignores the git and node files when pushed to project
+- React src files - app.js and index.js helps create the single page app
+- index.css - the main css
+- index.html - the root file for the app to render
 
 ### Task 1 (Video 191-196) Set up first component, front-end data, API for image source
 
@@ -156,7 +156,7 @@ The search component as a functional component, is stateless and renders whateve
 ```
 import React from 'react';
 
-const SearchBox = ({ searchfield, searchChange }) => {
+const SearchBox = ({ }) => {
 	return (
 		<div className="pa2">
 			<input
@@ -218,7 +218,7 @@ The filtering of the data of robots to match the user input requires it's own cu
 		});
 		// console.log(filteredRobots);
   ```      
- Check the function works with a console log and with react dev tools then you can pass the function to the jsx element as a prop. ```<CardList robots={filteredRobots.robots} />````
+ Check the function works with a console log and with react dev tools then you can pass the function to the jsx element as a prop. ```<CardList robots={filteredRobots.robots} />```
 
  At the end of this task app.js should look like this
 
@@ -361,7 +361,7 @@ return !robots.length ? (
 ```
 ### Task 5 (Video 202) Create a Scrolly Bar
 
-1. Create another functional component and export it into App.js, When you console log props you will noe that props has children ```props.children``` 
+1. Create another functional component and export it into App.js, When you console log props note that props has children ```props.children``` 
 
 ```
 const ScrollyBar = (props) =>{
@@ -427,8 +427,6 @@ class App extends Component {
 		const filteredRobots = this.state.robots.filter((robots) => {
 			return robots.name.toLowerCase().includes(this.state.searchfield.toLowerCase());
 		});
-		// console.log('render-3');
-
 		if (this.state.robots.length === 0) {
 			return (
 				<div>
